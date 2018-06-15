@@ -36,12 +36,24 @@ def create_argparser():
     return parser
 
 
+def print_repositories(repositories):
+    print('---------------------------------------------------')
+    for repository in repositories:
+        print(
+            'url: {}; stars count: {}; open issues count: {};'.format(
+                repository.get('html_url'),
+                repository.get('stargazers_count'),
+                repository.get('open_issues_count'),
+            )
+        )
+
+
 if __name__ == '__main__':
     argparser = create_argparser()
     args = argparser.parse_args()
     today = datetime.now().date()
     n_days_ago = today - timedelta(days=args.days)
-    items = get_trending_repositories(
+    trending_repositories = get_trending_repositories(
         created_after=n_days_ago,
         top_size=args.number
     )
@@ -51,12 +63,5 @@ if __name__ == '__main__':
             args.days,
         )
     )
-    print('---------------------------------------------------')
-    for item in items:
-        print(
-            'url: {}; stars count: {}; open issues count: {};'.format(
-                item.get('html_url'),
-                item.get('stargazers_count'),
-                item.get('open_issues_count'),
-            )
-        )
+    print_repositories(trending_repositories)
+
