@@ -46,8 +46,9 @@ if __name__ == '__main__':
         top_size=args.number
     )
     print(
-        'The most popular repositories in the last {} days:'.format(
-            args.days
+        '{} most popular repositories in the last {} days:'.format(
+            args.number,
+            args.days,
         )
     )
     print('---------------------------------------------------')
