@@ -4,17 +4,31 @@ from datetime import datetime, timedelta
 
 
 def get_trending_repositories(created_after, top_size):
-    search_params = {'q': 'created:>{}'.format(created_after),
+    created_after_filter = 'created:>{}'.format(created_after)
+    search_params = {'q': created_after_filter,
                      'type': 'Repositories',
                      'sort': 'stars',
                      'order': 'desc',
-                     'per_page': str(top_size)
+                     'per_page': top_size
                      }
     search_response = requests.get(
         'https://api.github.com/search/repositories',
         params=search_params
     )
     return search_response.json().get('items')
+
+
+def count_open_issues(repository):
+    repository_name = repository.get('full_name')
+    issues_url = 'https://api.github.com/repos/{}/issues'\
+        .format(repository_name)
+    issues_response = requests.get(issues_url)
+    open_issues = [issue for issue
+                   in issues_response.json()
+                   if issue.get('state') == 'open'
+                   ]
+    return len(open_issues)
+
 
 
 def create_argparser():
@@ -37,13 +51,13 @@ def create_argparser():
 
 
 def print_repositories(repositories):
-    print('---------------------------------------------------')
+    print('-'*50)
     for repository in repositories:
         print(
             'url: {}; stars count: {}; open issues count: {};'.format(
                 repository.get('html_url'),
                 repository.get('stargazers_count'),
-                repository.get('open_issues_count'),
+                count_open_issues(repository),
             )
         )
 
