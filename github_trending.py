@@ -5,12 +5,13 @@ from datetime import datetime, timedelta
 
 def get_trending_repositories(created_after, top_size):
     created_after_filter = 'created:>{}'.format(created_after)
-    search_params = {'q': created_after_filter,
-                     'type': 'Repositories',
-                     'sort': 'stars',
-                     'order': 'desc',
-                     'per_page': top_size
-                     }
+    search_params = {
+        'q': created_after_filter,
+        'type': 'Repositories',
+        'sort': 'stars',
+        'order': 'desc',
+        'per_page': top_size
+    }
     search_response = requests.get(
         'https://api.github.com/search/repositories',
         params=search_params
@@ -20,8 +21,9 @@ def get_trending_repositories(created_after, top_size):
 
 def count_open_issues(repository):
     repository_name = repository.get('full_name')
-    issues_url = 'https://api.github.com/repos/{}/issues'\
-        .format(repository_name)
+    issues_url = 'https://api.github.com/repos/{}/issues'.format(
+        repository_name
+    )
     issues_response = requests.get(issues_url)
     open_issues = [issue for issue
                    in issues_response.json()
